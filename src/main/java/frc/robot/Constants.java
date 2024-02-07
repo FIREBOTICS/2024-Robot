@@ -137,13 +137,12 @@ public final class Constants {
   }
   
   public static final class ControllerConstants {
-
     public static final int driverControllerPort = 0;
-    public static final int codriverControllerPort = 0;
+    public static final int codriverControllerPort = 1;
+    
 
     public static final double joystickDeadband = 0.15;
-
     public static final double triggerPressedThreshhold = 0.25;
-}
+  }
 
 }

@@ -1,7 +1,6 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
-import com.ctre.phoenix6.configs.MagnetSensorConfigs;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.signals.AbsoluteSensorRangeValue;
 import com.revrobotics.CANSparkMax;
@@ -36,12 +35,11 @@ public class SwerveModule extends SubsystemBase {
      * Constructs a new SwerveModule.
      * 
      * <p>SwerveModule represents and handles a swerve module.
+     * IDs: Front left - 1, front right - 2, back left - 3, back right - 4
      * 
-     * @param driveMotorId CAN ID of the NEO drive motor.
-     * @param steerMotorId CAN ID of the NEO steer motor.
+     * @param moduleId Module number, used to generate SPARK and CanCoder IDs
      * @param driveMotorInverted Drive NEO is inverted.
      * @param steerMotorInverted Steer NEO is inverted.
-     * @param canCoderId CAN ID of the CANCoder.
      * @param steerOffsetRadians Offset of CANCoder reading from forward.
      */
     public SwerveModule(int moduleID, boolean driveMotorInverted, boolean steerMotorInverted, double steerOffsetRadians) {

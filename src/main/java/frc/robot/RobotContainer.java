@@ -5,18 +5,12 @@
 package frc.robot;
 
 import frc.robot.Constants.ControllerConstants;
-import frc.robot.Constants.OperatorConstants;
-import frc.robot.commands.Autos;
-import frc.robot.commands.ExampleCommand;
-import frc.robot.commands.drivetrain.SwerveDriveCmd;
-import frc.robot.subsystems.ExampleSubsystem;
+import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.SwerveDrive;
-import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 /**
@@ -28,12 +22,16 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 public class RobotContainer {
   // Initialize subsystems.
   private final SwerveDrive swerveDrive = new SwerveDrive();
+  private final Shooter shooter = new Shooter(50, 51, 52, 53, 54, 55);
 
   // Initialize auto selector.
   SendableChooser<Command> autoSelector = new SendableChooser<Command>();
 
   private final CommandXboxController m_driverController =
     new CommandXboxController(ControllerConstants.driverControllerPort);
+
+  private final CommandXboxController m_codriverController =
+    new CommandXboxController(ControllerConstants.codriverControllerPort);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -65,6 +63,19 @@ public class RobotContainer {
     m_driverController.leftTrigger(ControllerConstants.triggerPressedThreshhold).whileTrue(swerveDrive.lockCommand());
     m_driverController.x().onTrue(swerveDrive.speedUpCommand(0.1));
     m_driverController.a().onTrue(swerveDrive.slowDownCommand(0.1));
+    m_driverController.povLeft() /* GOTO STAGE POSITION #1 */; //unclear if these will be feasible
+    m_driverController.povLeft() /* GOTO STAGE POSITION #2 */;
+    m_driverController.povLeft() /* GOTO STAGE POSITION #3 */;
+
+    // Extend AMP platform doohickey when either bumper is pressed, and lower it when it's unpressed
+    m_codriverController.leftBumper().or(m_codriverController.rightBumper())
+    .onTrue(shooter.setPlatformCommand(true))
+    .onFalse(shooter.setPlatformCommand(false));
+    m_codriverController.x() /* RUN TRAP */;
+    m_codriverController.y() /* RUN SPEAKER */;
+    m_codriverController.b() /* RUN AMP */;
+
+
     swerveDrive.setDefaultCommand(
         swerveDrive.driveCommand(
           () -> deadband(m_driverController.getLeftY()),
