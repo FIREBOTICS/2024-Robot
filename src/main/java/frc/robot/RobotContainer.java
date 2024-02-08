@@ -5,6 +5,7 @@
 package frc.robot;
 
 import frc.robot.Constants.ControllerConstants;
+import frc.robot.Constants.SubsystemConstants;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.SwerveDrive;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -71,9 +72,10 @@ public class RobotContainer {
     m_codriverController.leftBumper().or(m_codriverController.rightBumper())
     .onTrue(shooter.setPlatformCommand(true))
     .onFalse(shooter.setPlatformCommand(false));
-    m_codriverController.x() /* RUN TRAP */;
-    m_codriverController.y() /* RUN SPEAKER */;
-    m_codriverController.b() /* RUN AMP */;
+    m_codriverController.b().whileTrue(shooter.shootCommand(SubsystemConstants.ampShotSpeed)); /* AMP */
+    m_codriverController.b().whileTrue(shooter.shootCommand(SubsystemConstants.trapShotSpeed)); /* TRAP */
+    m_codriverController.b().whileTrue(shooter.shootCommand(SubsystemConstants.speakerShotSpeed)); /* SPEAKER */
+    // m_codriverController.b().onTrue(shooter.shootCommand(SubsystemConstants.ampShotSpeed)).onFalse(shooter.shootCommand(0));
 
 
     swerveDrive.setDefaultCommand(

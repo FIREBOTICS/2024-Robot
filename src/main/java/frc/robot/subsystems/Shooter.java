@@ -7,6 +7,7 @@ import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.SubsystemConstants;
 
 /**
  * This class defines the shooter as well as the adjacent motors between the intake and shooter
@@ -28,6 +29,18 @@ public class Shooter extends SubsystemBase {
                 rightSolenoid.set(status);
             });
     }
+    public Command shootCommand(double speed) {
+        return startEnd(
+            () -> {
+                leftShooterMotor.set(speed);
+                rightShooterMotor.set(speed);
+            },
+            () -> {
+                leftShooterMotor.set(0);
+                rightShooterMotor.set(0);
+
+            });
+    }
 
     public Shooter(int loaderLeftID, int loaderRightId, int shooterLeftId, int shooterRightId, int leftSolenoidId, int rightSolenoidId) {
         leftLoaderMotor = new CANSparkMax(loaderLeftID, MotorType.kBrushless);
@@ -40,7 +53,7 @@ public class Shooter extends SubsystemBase {
         leftShooterMotor.restoreFactoryDefaults();
         rightShooterMotor.restoreFactoryDefaults();
 
-        leftSolenoid = new Solenoid(PneumaticsModuleType.CTREPCM, leftSolenoidId);
-        rightSolenoid = new Solenoid(PneumaticsModuleType.CTREPCM, rightSolenoidId);
+        leftSolenoid = new Solenoid(PneumaticsModuleType.REVPH, leftSolenoidId);
+        rightSolenoid = new Solenoid(PneumaticsModuleType.REVPH, rightSolenoidId);
     }
 }

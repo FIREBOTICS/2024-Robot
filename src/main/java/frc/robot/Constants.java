@@ -91,6 +91,17 @@ public final class Constants {
 
   }
 
+  public static class SubsystemConstants {
+    public static final double ampShotSpeed = 0.2; // CALIBRATE LATER
+    public static final double speakerShotSpeed = 0.7; // CALIBRATE LATER
+    public static final double trapShotSpeed = 0.7; // CALIBRATE LATER
+
+    public static final double intakeMotorSpeed = 0.4;
+    public static final double bumperMotorRejectSpeed = 0.7; // these should have opposite signs:
+    public static final double bumperMotorIntakeSpeed = 0.7;
+
+  }
+
   public static final class CANDevices {
     public static final int powerDistributionHubId = 0;
 
@@ -140,7 +151,6 @@ public final class Constants {
     public static final int driverControllerPort = 0;
     public static final int codriverControllerPort = 1;
     
-
     public static final double joystickDeadband = 0.15;
     public static final double triggerPressedThreshhold = 0.25;
   }
