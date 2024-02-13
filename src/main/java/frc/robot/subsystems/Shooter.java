@@ -1,5 +1,7 @@
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.VictorSPXControlMode;
+import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
@@ -13,45 +15,47 @@ import frc.robot.Constants.SubsystemConstants;
  * This class defines the shooter as well as the adjacent motors between the intake and shooter
  */
 public class Shooter extends SubsystemBase {
-    private final CANSparkMax leftLoaderMotor;
-    private final CANSparkMax rightLoaderMotor;
+    private final VictorSPX leftLoaderMotor;
+    private final VictorSPX rightLoaderMotor;
 
-    private final CANSparkMax leftShooterMotor;
-    private final CANSparkMax rightShooterMotor;
+    private final VictorSPX leftShooterMotor;
+    private final VictorSPX rightShooterMotor;
 
     private final Solenoid leftSolenoid;
     private final Solenoid rightSolenoid;
 
+    // for brevity's sake
+    private final VictorSPXControlMode PercentOutput = VictorSPXControlMode.PercentOutput;
+
     public Command setPlatformCommand(boolean status) {
         return runOnce(
             () -> {
-                leftSolenoid.set(status);
+                leftSolenoid .set(status);
                 rightSolenoid.set(status);
             });
     }
     public Command shootCommand(double speed) {
         return startEnd(
             () -> {
-                leftShooterMotor.set(speed);
-                rightShooterMotor.set(speed);
+                leftShooterMotor .set(PercentOutput, speed);
+                rightShooterMotor.set(PercentOutput, speed);
             },
             () -> {
-                leftShooterMotor.set(0);
-                rightShooterMotor.set(0);
-
-            });
+                leftShooterMotor .set(PercentOutput, 0);
+                rightShooterMotor.set(PercentOutput, 0);
+            }); 
     }
 
     public Shooter(int loaderLeftID, int loaderRightId, int shooterLeftId, int shooterRightId, int leftSolenoidId, int rightSolenoidId) {
-        leftLoaderMotor = new CANSparkMax(loaderLeftID, MotorType.kBrushless);
-        rightLoaderMotor = new CANSparkMax(loaderRightId, MotorType.kBrushless);
-        leftLoaderMotor.restoreFactoryDefaults();
-        rightLoaderMotor.restoreFactoryDefaults();
+        leftLoaderMotor =  new VictorSPX(loaderLeftID);
+        rightLoaderMotor = new VictorSPX(loaderRightId);
+        leftLoaderMotor .configFactoryDefault();
+        rightLoaderMotor.configFactoryDefault();
 
-        leftShooterMotor = new CANSparkMax(shooterLeftId, MotorType.kBrushless);
-        rightShooterMotor = new CANSparkMax(shooterRightId, MotorType.kBrushless);
-        leftShooterMotor.restoreFactoryDefaults();
-        rightShooterMotor.restoreFactoryDefaults();
+        leftShooterMotor =  new VictorSPX(shooterLeftId);
+        rightShooterMotor = new VictorSPX(shooterRightId);
+        leftShooterMotor .configFactoryDefault();
+        rightShooterMotor.configFactoryDefault();
 
         leftSolenoid = new Solenoid(PneumaticsModuleType.REVPH, leftSolenoidId);
         rightSolenoid = new Solenoid(PneumaticsModuleType.REVPH, rightSolenoidId);

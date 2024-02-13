@@ -8,6 +8,8 @@ import frc.robot.Constants.ControllerConstants;
 import frc.robot.Constants.SubsystemConstants;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.SwerveDrive;
+import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.cscore.UsbCamera;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -24,6 +26,7 @@ public class RobotContainer {
   // Initialize subsystems.
   private final SwerveDrive swerveDrive = new SwerveDrive();
   private final Shooter shooter = new Shooter(50, 51, 52, 53, 54, 55);
+  UsbCamera camera = CameraServer.startAutomaticCapture();
 
   // Initialize auto selector.
   SendableChooser<Command> autoSelector = new SendableChooser<Command>();
@@ -39,6 +42,8 @@ public class RobotContainer {
     // Configure the trigger bindings
     configureBindings();
     SmartDashboard.putData("auto selector", autoSelector);
+
+    camera.setResolution(240, 190);
   }
 
   /**
@@ -51,8 +56,6 @@ public class RobotContainer {
    * joysticks}.
    */
    private void configureBindings() {
-
-
     /*
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
     new Trigger(m_exampleSubsystem::exampleCondition)
