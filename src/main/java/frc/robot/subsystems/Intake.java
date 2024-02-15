@@ -14,7 +14,7 @@ public class Intake extends SubsystemBase {
     // for brevity's sake
     private final VictorSPXControlMode PercentOutput = VictorSPXControlMode.PercentOutput;
 
-    public Command intake(double speed) {
+    public Command intakeCommand() {
         return startEnd(
             () -> {
                 intakeMotor.set(PercentOutput, SubsystemConstants.intakeMotorSpeed);

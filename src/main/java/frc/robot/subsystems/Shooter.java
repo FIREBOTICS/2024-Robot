@@ -5,6 +5,7 @@ import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
+import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -21,32 +22,33 @@ public class Shooter extends SubsystemBase {
     private final VictorSPX leftShooterMotor;
     private final VictorSPX rightShooterMotor;
 
-    private final Solenoid leftSolenoid;
-    private final Solenoid rightSolenoid;
+    private final DoubleSolenoid leftSolenoid;
+    private final DoubleSolenoid rightSolenoid;
 
     // for brevity's sake
     private final VictorSPXControlMode PercentOutput = VictorSPXControlMode.PercentOutput;
 
-    public Command setPlatformCommand(boolean status) {
+    public Command setPlatformCommand(boolean extended) {
+        final DoubleSolenoid.Value value = extended ? DoubleSolenoid.Value.kForward : DoubleSolenoid.Value.kReverse;
         return runOnce(
             () -> {
-                leftSolenoid .set(status);
-                rightSolenoid.set(status);
+                leftSolenoid .set(value);
+                rightSolenoid.set(value);
             });
     }
     public Command shootCommand(double speed) {
         return startEnd(
             () -> {
-                leftShooterMotor .set(PercentOutput, speed);
+                leftShooterMotor.set(PercentOutput, speed);
                 rightShooterMotor.set(PercentOutput, speed);
             },
             () -> {
-                leftShooterMotor .set(PercentOutput, 0);
+                leftShooterMotor.set(PercentOutput, 0);
                 rightShooterMotor.set(PercentOutput, 0);
             }); 
     }
 
-    public Shooter(int loaderLeftID, int loaderRightId, int shooterLeftId, int shooterRightId, int leftSolenoidId, int rightSolenoidId) {
+    public Shooter(int loaderLeftID, int loaderRightId, int shooterLeftId, int shooterRightId, int leftSolenoidForward, int leftSolenoidReverse, int rightSolenoidForward, int rightSolenoidReverse) {
         leftLoaderMotor =  new VictorSPX(loaderLeftID);
         rightLoaderMotor = new VictorSPX(loaderRightId);
         leftLoaderMotor .configFactoryDefault();
@@ -57,7 +59,7 @@ public class Shooter extends SubsystemBase {
         leftShooterMotor .configFactoryDefault();
         rightShooterMotor.configFactoryDefault();
 
-        leftSolenoid = new Solenoid(PneumaticsModuleType.REVPH, leftSolenoidId);
-        rightSolenoid = new Solenoid(PneumaticsModuleType.REVPH, rightSolenoidId);
+        leftSolenoid = new DoubleSolenoid(PneumaticsModuleType.REVPH, leftSolenoidForward, leftSolenoidReverse);
+        rightSolenoid = new DoubleSolenoid(PneumaticsModuleType.REVPH, rightSolenoidForward, rightSolenoidReverse);
     }
 }

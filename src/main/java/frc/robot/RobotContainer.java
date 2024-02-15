@@ -6,6 +6,7 @@ package frc.robot;
 
 import frc.robot.Constants.ControllerConstants;
 import frc.robot.Constants.SubsystemConstants;
+import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.SwerveDrive;
 import edu.wpi.first.cameraserver.CameraServer;
@@ -25,7 +26,8 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 public class RobotContainer {
   // Initialize subsystems.
   private final SwerveDrive swerveDrive = new SwerveDrive();
-  private final Shooter shooter = new Shooter(50, 51, 52, 53, 54, 55);
+  private final Intake intake = new Intake(50, 51);
+  private final Shooter shooter = new Shooter(60, 61, 62, 63, 1, 2, 3, 4);
   UsbCamera camera = CameraServer.startAutomaticCapture();
 
   // Initialize auto selector.
@@ -62,6 +64,11 @@ public class RobotContainer {
         .onTrue(new ExampleCommand(m_exampleSubsystem));
     */
 
+    /*
+     *      Y 
+     *    X   B
+     *      A 
+     */
     // Schedule `lock` when the Xbox controller's left trigger is beyond the threshold,
     // cancelling on release.
     m_driverController.leftTrigger(ControllerConstants.triggerPressedThreshhold).whileTrue(swerveDrive.lockCommand());
@@ -73,11 +80,13 @@ public class RobotContainer {
 
     // Extend AMP platform doohickey when either bumper is pressed, and lower it when it's unpressed
     m_codriverController.leftBumper().or(m_codriverController.rightBumper())
-    .onTrue(shooter.setPlatformCommand(true))
-    .onFalse(shooter.setPlatformCommand(false));
-    m_codriverController.b().whileTrue(shooter.shootCommand(SubsystemConstants.ampShotSpeed)); /* AMP */
-    m_codriverController.b().whileTrue(shooter.shootCommand(SubsystemConstants.trapShotSpeed)); /* TRAP */
-    m_codriverController.b().whileTrue(shooter.shootCommand(SubsystemConstants.speakerShotSpeed)); /* SPEAKER */
+      .onTrue(shooter.setPlatformCommand(true))
+      .onFalse(shooter.setPlatformCommand(false));
+    m_codriverController.x().whileTrue(intake.intakeCommand());
+    m_codriverController.b().whileTrue(shooter.shootCommand(SubsystemConstants.ampShotSpeed));
+    m_codriverController.y().whileTrue(shooter.shootCommand(SubsystemConstants.trapShotSpeed));
+    m_codriverController.a().whileTrue(shooter.shootCommand(SubsystemConstants.speakerShotSpeed));
+    /* Uncomment this if the other one doesn't work */
     // m_codriverController.b().onTrue(shooter.shootCommand(SubsystemConstants.ampShotSpeed)).onFalse(shooter.shootCommand(0));
 
 
