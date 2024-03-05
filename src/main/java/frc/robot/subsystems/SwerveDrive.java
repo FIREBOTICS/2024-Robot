@@ -3,6 +3,10 @@ package frc.robot.subsystems;
 import java.util.function.DoubleSupplier;
 
 import com.kauailabs.navx.frc.AHRS;
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
+import com.pathplanner.lib.util.PIDConstants;
+import com.pathplanner.lib.util.ReplanningConfig;
 
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -11,6 +15,8 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -56,6 +62,7 @@ public class SwerveDrive extends SubsystemBase {
     private boolean isLocked = false;
     private boolean isFieldOriented = false;
     private double speedFactor = 0.3; //Speed
+    private String speedFactorKey = "Speed";
     private boolean speedChanged = false;
     private boolean isTracking = false;
     // Odometry for the robot, measured in meters for linear motion and radians for rotational motion
@@ -82,7 +89,8 @@ public class SwerveDrive extends SubsystemBase {
     public void setSpeedFactor(double newSpeedFactor) {
         speedChanged = true;
         this.speedFactor = newSpeedFactor;
-        SmartDashboard.updateValues();
+        Preferences.setDouble(speedFactorKey, speedFactor);
+        System.out.println(speedFactor);
     }
     /**
      * Increase driving speed by percentage
@@ -171,8 +179,12 @@ public class SwerveDrive extends SubsystemBase {
     public void setChassisSpeeds(ChassisSpeeds chassisSpeeds) {
         setModuleStatesAuto(DriveConstants.kinematics.toSwerveModuleStates(chassisSpeeds));
     }
+    public ChassisSpeeds getChassisSpeeds() {
+        return DriveConstants.kinematics.toChassisSpeeds(getModuleStates());
+    }
 
-        /**
+
+    /**
      * Returns an array of module states.
      * 
      * @return An array of SwerveModuleState.
@@ -228,6 +240,41 @@ public class SwerveDrive extends SubsystemBase {
         // IMU is turned 90 degrees, so pitch and roll are flipped.
         return navX.getRoll();
     }
+
+    /**
+     * Resets the measured distance driven for each module.
+     */
+    public void resetDriveDistances() {
+        frontLeftMod.resetDistance();
+        frontRightMod.resetDistance();
+        backLeftMod.resetDistance();
+        backRightMod.resetDistance();
+    }
+    /**
+     * @return The current estimated position of the robot on the field
+     * based on drive encoder and gyro readings.
+     */
+    public Pose2d getPose() {
+        return odometry.getEstimatedPosition();
+    }
+
+    /**
+     * Resets the current pose.
+     */
+    public void resetPose() {
+        resetDriveDistances();
+        resetHeading();
+
+        odometry = new SwerveDrivePoseEstimator(
+            DriveConstants.kinematics,
+            new Rotation2d(),
+            getModulePositions(),
+            new Pose2d()
+        );
+    }
+    public void resetPose(Pose2d pose) {
+        odometry.resetPosition(navX.getRotation2d(), getModulePositions(), pose);
+      }
 
     /**
      * Sets the gyro heading to zero.
@@ -295,7 +342,7 @@ public class SwerveDrive extends SubsystemBase {
             // Reduces the speed of the drive base for "turtle" or "sprint" modes.
             driveX *= speedFactor;
             driveY *= speedFactor;
-            rotation *= speedFactor; //TODO: make individually modifiable
+            rotation *= speedFactor; //TODO: make individually modifiable?
 
             // Represents the overall state of the drive base.
             ChassisSpeeds speeds =
@@ -313,6 +360,13 @@ public class SwerveDrive extends SubsystemBase {
             setModuleStates(states);
         }
     }
+    
+    public void driveRobotRelative(ChassisSpeeds robotRelativeSpeeds) {
+        ChassisSpeeds targetSpeeds = ChassisSpeeds.discretize(robotRelativeSpeeds, 0.02);
+
+        SwerveModuleState[] targetStates = DriveConstants.kinematics.toSwerveModuleStates(targetSpeeds);
+        setModuleStates(targetStates);
+    }
 
     /**
      * Constructs a new SwerveSys.
@@ -324,7 +378,33 @@ public class SwerveDrive extends SubsystemBase {
         // resetDriveDistances();
 
         // resetPose();
-        // SmartDashboard.putNumber("Speed Percent", speedFactor);
+        Preferences.initDouble(speedFactorKey, speedFactor);
+            // Configure AutoBuilder last
+            AutoBuilder.configureHolonomic(
+                this::getPose, // Robot pose supplier
+                this::resetPose, // Method to reset odometry (will be called if your auto has a starting pose)
+                this::getChassisSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
+                this::driveRobotRelative, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
+                new HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live in your Constants class
+                    new PIDConstants(5.0, 0.0, 0.0), // Translation PID constants
+                    new PIDConstants(5.0, 0.0, 0.0), // Rotation PID constants
+                    4.5, // Max module speed, in m/s
+                    0.4, // Drive base radius in meters. Distance from robot center to furthest module.
+                    new ReplanningConfig() // Default path replanning config. See the API for the options here
+                ),
+                () -> {
+                    // Boolean supplier that controls when the path will be mirrored for the red alliance
+                    // This will flip the path being followed to the red side of the field.
+                    // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
+
+                    var alliance = DriverStation.getAlliance();
+                    if (alliance.isPresent()) {
+                    return alliance.get() == DriverStation.Alliance.Red;
+                    }
+                    return false;
+                },
+                this // Reference to this subsystem to set requirements
+            );
 
     }
 
@@ -340,7 +420,7 @@ public class SwerveDrive extends SubsystemBase {
         SmartDashboard.putNumber("rear right CANcoder", backRightMod.getCanCoderAngle().getDegrees());
 
         if (speedChanged) speedChanged = false;
-        else speedFactor = SmartDashboard.getNumber("Speed Percent", speedFactor);
+        else speedFactor = Preferences.getDouble(speedFactorKey, speedFactor);
     }
     
 

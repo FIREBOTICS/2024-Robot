@@ -44,7 +44,7 @@ public class SwerveModule extends SubsystemBase {
      */
     public SwerveModule(int moduleID, boolean driveMotorInverted, boolean steerMotorInverted, double steerOffsetRadians) {
         moduleID *= 10;
-        int driveMotorId = moduleID+1;
+        int driveMotorId = moduleID+1; /* i.e 11 */
         int steerMotorId = moduleID+2;
         int canCoderId = moduleID+3;
         
