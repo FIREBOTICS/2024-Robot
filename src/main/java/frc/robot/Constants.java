@@ -8,6 +8,7 @@ import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
@@ -74,10 +75,11 @@ public final class Constants {
 
     public static final double maxDriveSpeedMetersPerSec = 5.0;
     
-    public static final double frontLeftModuleOffset  = Units.degreesToRadians(33.35); //221
-    public static final double frontRightModuleOffset = Units.degreesToRadians(158.25); //162.5
-    public static final double backLeftModuleOffset   = Units.degreesToRadians(129.6); //125.4
-    public static final double backRightModuleOffset  = Units.degreesToRadians(325.5); //323.5
+    public static final double frontLeftModuleOffset  = Units.degreesToRadians(122);
+    public static final double frontRightModuleOffset = Units.degreesToRadians(250.5);
+    public static final double backLeftModuleOffset   = Units.degreesToRadians(34.3);
+    public static final double backRightModuleOffset  = Units.degreesToRadians(233);
+  
 
     /**
      * The rate the robot will spin with full Rot command.
@@ -92,14 +94,16 @@ public final class Constants {
   }
 
   public static class SubsystemConstants {
-    public static final double ampShotSpeed = 0.2; // CALIBRATE LATER
-    public static final double speakerShotSpeed = 0.7; // CALIBRATE LATER
+    public static final double ampShotSpeed = 0.4;
+    public static final double speakerShotSpeed = 1;
     public static final double trapShotSpeed = 0.7; // CALIBRATE LATER
 
-    public static final double intakeMotorSpeed = 0.4;
+    public static final double intakeMotorSpeed = 0.9;
+    public static final double loaderMotorSpeed = 1;
     public static final double bumperMotorRejectSpeed = 0.7; // these should have opposite signs:
     public static final double bumperMotorIntakeSpeed = 0.7;
 
+    public static final double climberMotorSpeed = 0.5;
   }
 
   public static final class CANDevices {
@@ -138,8 +142,8 @@ public final class Constants {
 
     public static final boolean  frontLeftDriveInverted = false;
     public static final boolean frontRightDriveInverted = false;
-    public static final boolean   backLeftDriveInverted = true;
-    public static final boolean  backRightDriveInverted = true;
+    public static final boolean   backLeftDriveInverted = false;
+    public static final boolean  backRightDriveInverted = false;
 
     public static final boolean  frontLeftSteerInverted = true;
     public static final boolean frontRightSteerInverted = false;

@@ -1,20 +1,16 @@
-package frc.robot.commands.drivetrain;
-
-import java.util.function.DoubleSupplier;
+package frc.robot.commands.intake;
 
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.LEDs;
 
-public class LoadCommand extends Command {
-    private final DoubleSupplier speed;
+public class IntakeCommand extends Command {
     private final Intake intake;
     private final LEDs leds;
     private final AddressableLEDBuffer buffer;
 
-    public LoadCommand(DoubleSupplier speed, Intake intake, LEDs leds) {
-        this.speed = speed;
+    public IntakeCommand(Intake intake, LEDs leds) {
         this.intake = intake;
         this.leds = leds;
         this.buffer = new AddressableLEDBuffer(leds.getLength());
@@ -26,13 +22,13 @@ public class LoadCommand extends Command {
 
     @Override
     public void initialize() {
-        intake.runLoaderMotors(speed.getAsDouble()); /* runs both */
+        intake.runIntakeMotors(true); /* runs both */
         leds.setColor(buffer);
     }
 
     @Override
     public void end(boolean interrupted) {
-        intake.runLoaderMotors(0);
+        intake.runIntakeMotors(false);
         /* leds SHOULD go back to default color (defaultCommand in RobotContainer) */
     }
 

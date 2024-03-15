@@ -3,6 +3,7 @@ package frc.robot.subsystems;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.signals.AbsoluteSensorRangeValue;
+import com.ctre.phoenix6.signals.SensorDirectionValue;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkPIDController;
@@ -36,6 +37,7 @@ public class SwerveModule extends SubsystemBase {
      * 
      * <p>SwerveModule represents and handles a swerve module.
      * IDs: Front left - 1, front right - 2, back left - 3, back right - 4
+     * (Front = intakeside)
      * 
      * @param moduleId Module number, used to generate SPARK and CanCoder IDs
      * @param driveMotorInverted Drive NEO is inverted.
@@ -84,7 +86,8 @@ public class SwerveModule extends SubsystemBase {
 
 
         CANcoderConfiguration canCoderConfig = new CANcoderConfiguration();
-        canCoderConfig.MagnetSensor.AbsoluteSensorRange = AbsoluteSensorRangeValue.Unsigned_0To1; //TODO: I HAVE NO IDEA IF THIS WORKS
+        canCoderConfig.MagnetSensor.AbsoluteSensorRange = AbsoluteSensorRangeValue.Unsigned_0To1 ; //TODO: I HAVE NO IDEA IF THIS WORKS
+        canCoderConfig.MagnetSensor.SensorDirection = SensorDirectionValue.CounterClockwise_Positive;
         //configure the CANCoder to output in unsigned (wrap around from 360 to 0 degrees)
         canCoder.getConfigurator().apply(canCoderConfig);
 
@@ -103,7 +106,7 @@ public class SwerveModule extends SubsystemBase {
      * 
      * @return The current angle of the module between 0 and 2 * PI.
      */
-    public Rotation2d getCanCoderAngle() {        
+    public Rotation2d getCanCoderAngle() {
         double unsignedAngle = (Units.rotationsToRadians((canCoder.getAbsolutePosition().refresh().getValue())) - offset.getRadians()) % (2 * Math.PI);
         return new Rotation2d(unsignedAngle);
     }
@@ -221,4 +224,5 @@ public class SwerveModule extends SubsystemBase {
     public void setDriveCurrentLimit(int amps) {
         driveMotor.setSmartCurrentLimit(amps);
     }
+
 }

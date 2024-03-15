@@ -17,7 +17,7 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Preferences;
-import edu.wpi.first.wpilibj.SPI;
+import edu.wpi.first.wpilibj.SerialPort;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -52,12 +52,12 @@ public class SwerveDrive extends SubsystemBase {
     private final SwerveModule backRightMod = 
         new SwerveModule(
             4,
-                CANDevices.frontRightDriveInverted,
-                CANDevices.frontRightSteerInverted,
-            DriveConstants.frontRightModuleOffset
+                CANDevices.backRightDriveInverted,
+                CANDevices.backRightSteerInverted,
+            DriveConstants.backRightModuleOffset
         );
     
-    private final AHRS navX = new AHRS(SPI.Port.kMXP);
+    private final AHRS navX = new AHRS(SerialPort.Port.kUSB);
 
     private boolean isLocked = false;
     private boolean isFieldOriented = false;
@@ -218,7 +218,7 @@ public class SwerveDrive extends SubsystemBase {
      * @return The current heading of the robot.
      */
     public Rotation2d getHeading() {
-        return Rotation2d.fromDegrees(-navX.getYaw());
+        return Rotation2d.fromDegrees(navX.getYaw());
     }
     
     /**
@@ -291,8 +291,8 @@ public class SwerveDrive extends SubsystemBase {
     }
 
     public Command driveCommand(
-        DoubleSupplier driveSupplier, 
-        DoubleSupplier strafeSupplier, 
+        DoubleSupplier driveSupplier,
+        DoubleSupplier strafeSupplier,
         DoubleSupplier rotSupplier,
         boolean isFieldRelative) {
             return runOnce(
@@ -312,10 +312,8 @@ public class SwerveDrive extends SubsystemBase {
                         -rot,
                         isFieldRelative
                     );
-                });
-    
-        
-
+                }
+            );
     }
 
     /**
@@ -339,7 +337,6 @@ public class SwerveDrive extends SubsystemBase {
             });
         }
         else {
-            // Reduces the speed of the drive base for "turtle" or "sprint" modes.
             driveX *= speedFactor;
             driveY *= speedFactor;
             rotation *= speedFactor; //TODO: make individually modifiable?
@@ -379,32 +376,33 @@ public class SwerveDrive extends SubsystemBase {
 
         // resetPose();
         Preferences.initDouble(speedFactorKey, speedFactor);
-            // Configure AutoBuilder last
-            AutoBuilder.configureHolonomic(
-                this::getPose, // Robot pose supplier
-                this::resetPose, // Method to reset odometry (will be called if your auto has a starting pose)
-                this::getChassisSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
-                this::driveRobotRelative, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
-                new HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live in your Constants class
-                    new PIDConstants(5.0, 0.0, 0.0), // Translation PID constants
-                    new PIDConstants(5.0, 0.0, 0.0), // Rotation PID constants
-                    4.5, // Max module speed, in m/s
-                    0.4, // Drive base radius in meters. Distance from robot center to furthest module.
-                    new ReplanningConfig() // Default path replanning config. See the API for the options here
-                ),
-                () -> {
-                    // Boolean supplier that controls when the path will be mirrored for the red alliance
-                    // This will flip the path being followed to the red side of the field.
-                    // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
 
-                    var alliance = DriverStation.getAlliance();
-                    if (alliance.isPresent()) {
-                    return alliance.get() == DriverStation.Alliance.Red;
-                    }
-                    return false;
-                },
-                this // Reference to this subsystem to set requirements
-            );
+        // Configure AutoBuilder last
+        AutoBuilder.configureHolonomic(
+            this::getPose, // Robot pose supplier
+            this::resetPose, // Method to reset odometry (will be called if your auto has a starting pose)
+            this::getChassisSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
+            this::driveRobotRelative, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
+            new HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live in your Constants class
+                new PIDConstants(1,0,0), // Translation PID constants
+                new PIDConstants(1,0,0), // Rotation PID constants
+                4.5, // Max module speed, in m/s
+                0.4, // Drive base radius in meters. Distance from robot center to furthest module.
+                new ReplanningConfig() // Default path replanning config. See the API for the options here
+            ),
+            () -> {
+                // Boolean supplier that controls when the path will be mirrored for the red alliance
+                // This will flip the path being followed to the red side of the field.
+                // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
+
+                var alliance = DriverStation.getAlliance();
+                if (alliance.isPresent()) {
+                return alliance.get() == DriverStation.Alliance.Red;
+                }
+                return false;
+            },
+            this // Reference to this subsystem to set requirements
+        );
 
     }
 
@@ -414,11 +412,14 @@ public class SwerveDrive extends SubsystemBase {
         // Updates the odometry every 20ms
         odometry.update(getHeading(), getModulePositions());
 
-        SmartDashboard.putNumber("front left CANcoder", frontLeftMod.getCanCoderAngle().getDegrees());
-        SmartDashboard.putNumber("front right CANcoder", frontRightMod.getCanCoderAngle().getDegrees());
-        SmartDashboard.putNumber("rear left CANcoder", backLeftMod.getCanCoderAngle().getDegrees());
-        SmartDashboard.putNumber("rear right CANcoder", backRightMod.getCanCoderAngle().getDegrees());
+        SmartDashboard.putNumber("front left CANcoder", 360-frontLeftMod.getCanCoderAngle().getDegrees());
+        SmartDashboard.putNumber("front right CANcoder", 360-frontRightMod.getCanCoderAngle().getDegrees());
+        SmartDashboard.putNumber("rear left CANcoder", 360-backLeftMod.getCanCoderAngle().getDegrees());
+        SmartDashboard.putNumber("rear right CANcoder", 360-backRightMod.getCanCoderAngle().getDegrees());
 
+        SmartDashboard.putNumber("rotation", navX.getYaw());
+        SmartDashboard.putNumber("pitch", navX.getPitch()-301.5);
+        SmartDashboard.putNumber("roll", navX.getRoll()-181.7);
         if (speedChanged) speedChanged = false;
         else speedFactor = Preferences.getDouble(speedFactorKey, speedFactor);
     }

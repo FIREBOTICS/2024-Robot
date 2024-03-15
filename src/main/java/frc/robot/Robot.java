@@ -4,7 +4,9 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
@@ -16,6 +18,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
  */
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
+  private Command m_disabledCommand;
 
   private RobotContainer m_robotContainer;
 
@@ -44,11 +47,22 @@ public class Robot extends TimedRobot {
     // and running subsystem periodic() methods.  This must be called from the robot's periodic
     // block in order for anything in the Command-based framework to work.
     CommandScheduler.getInstance().run();
+  
+    // SmartDashboard.putNumber("PSI", m_compressor.getPressure());
+    // System.out.println(m_compressor.getPressure()); //-24?
   }
 
   /** This function is called once each time the robot enters Disabled mode. */
   @Override
-  public void disabledInit() {}
+  public void disabledInit() {
+    m_disabledCommand = m_robotContainer.getdisabledCommand();
+
+    // schedule the disabled command (example)
+    if (m_disabledCommand != null) {
+      m_disabledCommand.schedule();
+    }
+
+  }
 
   @Override
   public void disabledPeriodic() {}
@@ -62,6 +76,10 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();
     }
+    if (m_disabledCommand != null) {
+      m_disabledCommand.cancel();
+    }
+
   }
 
   /** This function is called periodically during autonomous. */
@@ -77,6 +95,10 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
+    if (m_disabledCommand != null) {
+      m_disabledCommand.cancel();
+    }
+
   }
 
   /** This function is called periodically during operator control. */
@@ -87,6 +109,7 @@ public class Robot extends TimedRobot {
   public void testInit() {
     // Cancels all running commands at the start of test mode.
     CommandScheduler.getInstance().cancelAll();
+
   }
 
   /** This function is called periodically during test mode. */
