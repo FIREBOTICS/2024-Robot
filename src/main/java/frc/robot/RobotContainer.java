@@ -52,9 +52,10 @@ public class RobotContainer {
   public RobotContainer() {
     configureBindings();
 
-    autoSelector.addOption("AMP 2 Shoot 1 - Auto 1.1", new PathPlannerAuto("AMP 2 Shoot 1 - Auto 1.1"));
-    autoSelector.addOption("AMP 3 - Auto 1.2", new PathPlannerAuto("AMP 3 - Auto 1.2"));
-    autoSelector.addOption("THIS AUTO", new PathPlannerAuto("THIS AUTO"));
+    autoSelector.addOption("Amp 2 Speaker 1", new PathPlannerAuto("Amp 2 Speaker 1"));
+    autoSelector.addOption("Amp 3", new PathPlannerAuto("Amp 3"));
+    autoSelector.addOption("Speaker 2", new PathPlannerAuto("Speaker 2"));
+    autoSelector.addOption("Test Curve", new PathPlannerAuto("Test Curve"));
     SmartDashboard.putData("auto selector", autoSelector);
 
     // camera.setResolution(240, 190);
