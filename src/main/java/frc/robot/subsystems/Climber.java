@@ -1,6 +1,5 @@
 package frc.robot.subsystems;
 
-import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
 import com.ctre.phoenix.motorcontrol.VictorSPXControlMode;

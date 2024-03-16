@@ -5,11 +5,8 @@ import java.util.function.DoubleSupplier;
 import com.ctre.phoenix.motorcontrol.VictorSPXControlMode;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 
-import edu.wpi.first.hal.HAL.SimPeriodicAfterCallback;
-import edu.wpi.first.networktables.DoubleSubscriber;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
-import edu.wpi.first.wpilibj.PneumaticHub;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -100,6 +97,11 @@ public class Shooter extends SubsystemBase {
         leftSolenoid = new DoubleSolenoid(PneumaticsModuleType.REVPH, leftSolenoidForward, leftSolenoidReverse);
         rightSolenoid = new DoubleSolenoid(PneumaticsModuleType.REVPH, rightSolenoidForward, rightSolenoidReverse);
         setPistons(DoubleSolenoid.Value.kReverse);
+    }
+
+    @Override
+    public void periodic() {
+        SmartDashboard.putBoolean("Compressor", compressor.isEnabled());
     }
 
 }

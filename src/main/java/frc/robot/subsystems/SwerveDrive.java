@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import java.util.function.DoubleSupplier;
+import java.util.function.BooleanSupplier;
 
 import com.kauailabs.navx.frc.AHRS;
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -219,7 +220,7 @@ public class SwerveDrive extends SubsystemBase {
      */
     public Rotation2d getHeading() {
         return Rotation2d.fromDegrees(navX.getYaw());
-    }
+      }
     
     /**
      * Returns the current pitch of the robot from the gyro.
@@ -283,6 +284,12 @@ public class SwerveDrive extends SubsystemBase {
         navX.zeroYaw();
     }
 
+    public Command resetHeadingCommand() {
+        return runOnce(
+            () -> resetHeading()
+        );
+    }
+
     public void setDriveCurrentLimit(int amps) {
         frontLeftMod.setDriveCurrentLimit(amps);
         frontRightMod.setDriveCurrentLimit(amps);
@@ -294,7 +301,7 @@ public class SwerveDrive extends SubsystemBase {
         DoubleSupplier driveSupplier,
         DoubleSupplier strafeSupplier,
         DoubleSupplier rotSupplier,
-        boolean isFieldRelative) {
+        BooleanSupplier isFieldRelative) {
             return runOnce(
                 () -> {
                     double drive = driveSupplier.getAsDouble();
@@ -310,7 +317,7 @@ public class SwerveDrive extends SubsystemBase {
                         -drive,
                         -strafe,
                         -rot,
-                        isFieldRelative
+                        isFieldRelative.getAsBoolean()
                     );
                 }
             );
@@ -418,8 +425,8 @@ public class SwerveDrive extends SubsystemBase {
         SmartDashboard.putNumber("rear right CANcoder", 360-backRightMod.getCanCoderAngle().getDegrees());
 
         SmartDashboard.putNumber("rotation", navX.getYaw());
-        SmartDashboard.putNumber("pitch", navX.getPitch()-301.5);
-        SmartDashboard.putNumber("roll", navX.getRoll()-181.7);
+        // SmartDashboard.putNumber("pitch", navX.getPitch()-301.5);
+        // SmartDashboard.putNumber("roll", navX.getRoll()-181.7);
         if (speedChanged) speedChanged = false;
         else speedFactor = Preferences.getDouble(speedFactorKey, speedFactor);
     }

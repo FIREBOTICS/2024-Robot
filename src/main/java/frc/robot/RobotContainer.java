@@ -6,16 +6,12 @@ package frc.robot;
 
 import frc.robot.Constants.ControllerConstants;
 import frc.robot.Constants.SubsystemConstants;
-import frc.robot.commands.intake.IntakeCommand;
-import frc.robot.commands.intake.LoadCommand;
+import frc.robot.commands.intake.SetCommand;
 import frc.robot.commands.shooter.AmpCommand;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Intake;
-import frc.robot.subsystems.LEDs;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.SwerveDrive;
-import edu.wpi.first.cameraserver.CameraServer;
-import edu.wpi.first.cscore.UsbCamera;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -23,6 +19,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
+import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -41,16 +38,23 @@ public class RobotContainer {
 
   // Initialize auto selector.
   SendableChooser<Command> autoSelector = new SendableChooser<Command>();
-
   private final CommandXboxController m_driverController =
     new CommandXboxController(ControllerConstants.driverControllerPort);
 
   private final CommandXboxController m_codriverController =
     new CommandXboxController(ControllerConstants.codriverControllerPort);
 
+  private boolean isFieldOriented = true;
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
-  public RobotContainer() {
+  public RobotContainer() { 
     configureBindings();
+
+    NamedCommands.registerCommand("Shoot Speaker", m_shooter.shootCommand(SubsystemConstants.speakerShotSpeed));
+    NamedCommands.registerCommand("Shoot Amp", new AmpCommand(m_shooter));
+    NamedCommands.registerCommand("Shooter 0", m_shooter.shootCommand(0));
+    NamedCommands.registerCommand("Intake", m_intake.loadCommand(() -> 0, () -> 0, () -> 1));
+    NamedCommands.registerCommand("Intake 0", m_intake.loadCommand(() -> 0, () -> 0, () -> 0));
+    NamedCommands.registerCommand("Nudge Note", new SetCommand(m_intake, m_shooter));
 
     autoSelector.addOption("Amp 2 Speaker 1", new PathPlannerAuto("Amp 2 Speaker 1"));
     autoSelector.addOption("Amp 3", new PathPlannerAuto("Amp 3"));
@@ -88,6 +92,8 @@ public class RobotContainer {
     m_driverController.y().onTrue(m_swerveDrive.speedUpCommand(0.1));
     m_driverController.a().onTrue(m_swerveDrive.slowDownCommand(0.1));
     m_driverController.x().onTrue(m_shooter.toggleCompressor());        
+    m_driverController.back().onTrue(toggleFieldOrientedCommand());
+    m_driverController.start().onTrue(m_swerveDrive.resetHeadingCommand());
     m_driverController.povLeft() /* GOTO STAGE POSITION #1 */; //unclear if these will be feasible
     m_driverController.povLeft() /* GOTO STAGE POSITION #2 */;
     m_driverController.povLeft() /* GOTO STAGE POSITION #3 */;
@@ -101,7 +107,7 @@ public class RobotContainer {
     // m_codriverController.x().whileTrue(new IntakeCommand(m_intake, m_leds));
     m_codriverController.b().whileTrue(new AmpCommand(m_shooter));
     m_codriverController.a().whileTrue(m_shooter.shootCommand(SubsystemConstants.speakerShotSpeed));
-
+    m_codriverController.x().whileTrue(new SetCommand(m_intake, m_shooter));
     m_codriverController.y().whileTrue(m_intake.reverseCommand());
  
     /* Uncomment this if the other one doesn't work */
@@ -114,7 +120,7 @@ public class RobotContainer {
           () -> deadband(m_driverController.getLeftY()),
           () -> deadband(m_driverController.getLeftX()),
           () -> deadband(m_driverController.getRightX()),
-          true //Switch to False for Chairbot Mode
+          () -> isFieldOriented //Switch to False for Chairbot Mode
         ) 
     );
 
@@ -169,6 +175,10 @@ public class RobotContainer {
     return value;
   }
 
+  public boolean getFieldOriented() {
+    return isFieldOriented;
+  }
+
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
    *
@@ -186,5 +196,10 @@ public class RobotContainer {
     // return new PathPlannerAuto("AMP 2 Shoot 1 - Auto 1.1");
     // return Commands.runOnce()
     return null;
+  }
+
+  public Command toggleFieldOrientedCommand() {
+    return Commands.runOnce(
+      () -> isFieldOriented = !isFieldOriented);
   }
 }

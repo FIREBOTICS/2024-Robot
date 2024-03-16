@@ -60,6 +60,7 @@ public class SwerveModule extends SubsystemBase {
         driveMotor.setIdleMode(IdleMode.kBrake);
         steerMotor.setIdleMode(IdleMode.kCoast);
         driveMotor.setSmartCurrentLimit(DriveConstants.driveCurrentLimitAmps);
+        steerMotor.setSmartCurrentLimit(DriveConstants.steerCurrentLimitAmps);
 
         driveEncoder = driveMotor.getEncoder();
         steerEncoder = steerMotor.getEncoder();

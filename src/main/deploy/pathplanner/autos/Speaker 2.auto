@@ -8,7 +8,7 @@
         {
           "type": "named",
           "data": {
-            "name": "Shooter to Speaker Speed"
+            "name": "Shoot Speaker"
           }
         },
         {
@@ -20,19 +20,25 @@
         {
           "type": "named",
           "data": {
-            "name": "Move Bottom of Shooter"
+            "name": "Intake"
           }
         },
         {
           "type": "wait",
           "data": {
-            "waitTime": 1.0
+            "waitTime": 0.5
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "Turn off Shooter Motors"
+            "name": "Shooter 0"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Intake 0"
           }
         },
         {
@@ -48,31 +54,32 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "Intake Wheels"
+                  "name": "Intake"
                 }
               },
               {
                 "type": "wait",
                 "data": {
-                  "waitTime": 1.0
+                  "waitTime": 1.5
                 }
-              },
+              }
+            ]
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
               {
                 "type": "named",
                 "data": {
-                  "name": "Turn off Intake Motors"
+                  "name": "Nudge Note"
                 }
               },
               {
-                "type": "named",
+                "type": "wait",
                 "data": {
-                  "name": "Shooter Motors Low Speeed Backward"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "Turn off Shooter Motors"
+                  "waitTime": 0.2
                 }
               }
             ]
@@ -91,7 +98,26 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "Shooter to Speaker Speed"
+                  "name": "Shoot Speaker"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "Intake"
+                }
+              },
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 0.4
                 }
               }
             ]
@@ -100,7 +126,13 @@
         {
           "type": "named",
           "data": {
-            "name": "Move Bottom of Shooter"
+            "name": "Shooter 0"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Intake 0"
           }
         }
       ]
