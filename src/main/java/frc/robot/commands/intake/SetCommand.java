@@ -12,8 +12,8 @@ public class SetCommand extends Command {
         this.intake = intake;
         this.shooter = shooter;
 
-        addRequirements(intake);
-        addRequirements(shooter);
+        addRequirements(intake, shooter);
+        // addRequirements(shooter);
     }
 
     @Override

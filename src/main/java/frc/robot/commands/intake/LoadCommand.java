@@ -18,10 +18,11 @@ public class LoadCommand extends Command {
         this.intake = intake;
         this.leds = leds;
         this.buffer = new AddressableLEDBuffer(leds.getLength());
-        for (int i = 0; i < leds.getLength(); i++) buffer.setRGB(i, 0, 255, 0);
+        for (int i = 0; i < leds.getLength(); i++)
+            buffer.setRGB(i, 0, 255, 0);
 
-        addRequirements(intake);
-        addRequirements(leds);
+        addRequirements(intake, leds);
+        // addRequirements(leds);
     }
 
     @Override

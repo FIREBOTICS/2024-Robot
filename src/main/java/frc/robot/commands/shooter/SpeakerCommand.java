@@ -16,11 +16,11 @@ public class SpeakerCommand extends Command {
         this.shooter = shooter;
         this.leds = leds;
         this.buffer = new AddressableLEDBuffer(leds.getLength());
-        for (int i = 0; i < leds.getLength(); i++) buffer.setRGB(i, 255, 217, 0); /* yellow */
+        for (int i = 0; i < leds.getLength(); i++)
+            buffer.setRGB(i, 255, 217, 0); /* yellow */
 
-
-        addRequirements(shooter);
-        addRequirements(leds);
+        addRequirements(shooter, leds);
+        // addRequirements(leds);
     }
 
     @Override

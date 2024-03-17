@@ -24,6 +24,6 @@ public class AmpCommand extends Command {
     public void end(boolean interrupted) {
         shooter.runMotors(0);
         shooter.setPistons(DoubleSolenoid.Value.kReverse);
-        
+
     }
-}   
+}

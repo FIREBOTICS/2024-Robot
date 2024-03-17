@@ -13,7 +13,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 /**
- * This class defines the shooter as well as the adjacent motors between the intake and shooter
+ * This class defines the shooter as well as the adjacent motors between the
+ * intake and shooter
  */
 public class Shooter extends SubsystemBase {
     private final VictorSPX leftShooterMotor;
@@ -30,40 +31,39 @@ public class Shooter extends SubsystemBase {
     public Command setPlatformCommand(boolean extended) {
         final DoubleSolenoid.Value value = extended ? DoubleSolenoid.Value.kForward : DoubleSolenoid.Value.kReverse;
         return runOnce(
-            () -> {
-                leftSolenoid .set(value);
-                rightSolenoid.set(value);
-            });
+                () -> {
+                    leftSolenoid.set(value);
+                    rightSolenoid.set(value);
+                });
     }
 
     public Command extendPlatformCommand() {
         return startEnd(
-            () -> {
-                leftSolenoid.set(DoubleSolenoid.Value.kForward);
-                rightSolenoid.set(DoubleSolenoid.Value.kForward);
-            }, 
-            () -> {
-                leftSolenoid.set(DoubleSolenoid.Value.kReverse);
-                rightSolenoid.set(DoubleSolenoid.Value.kReverse);
-            }
-        );
+                () -> {
+                    leftSolenoid.set(DoubleSolenoid.Value.kForward);
+                    rightSolenoid.set(DoubleSolenoid.Value.kForward);
+                },
+                () -> {
+                    leftSolenoid.set(DoubleSolenoid.Value.kReverse);
+                    rightSolenoid.set(DoubleSolenoid.Value.kReverse);
+                });
     }
 
     public Command shootCommand(double speed) {
         return startEnd(
-            () -> {
-                runMotors(speed);
-            },
-            () -> {
-                runMotors(0);
-            });
+                () -> {
+                    runMotors(speed);
+                },
+                () -> {
+                    runMotors(0);
+                });
     }
+
     public Command shootCommand(DoubleSupplier speed) {
         return runOnce(
-            () -> {
-                runMotors(speed.getAsDouble());
-            }
-        );
+                () -> {
+                    runMotors(speed.getAsDouble());
+                });
     }
 
     public void runMotors(double speed) {
@@ -78,21 +78,32 @@ public class Shooter extends SubsystemBase {
 
     public Command toggleCompressor() {
         return runOnce(
-            () -> {
-                if (compressor.isEnabled()) compressor.disable();
-                else                        compressor.enableDigital();
-            }
-        );
+                () -> {
+                    compressor.disable();
+                    /**
+                     * UN-COMMMENT THIS IF YOU WANT COMPRESSOR
+                     */
+                    // if (compressor.isEnabled())
+                    // compressor.disable();
+                    // else
+                    // compressor.enableDigital();
+                });
     }
 
-    public Shooter(int shooterLeftID, int shooterRightID, int leftSolenoidForward, int leftSolenoidReverse, int rightSolenoidForward, int rightSolenoidReverse) {
-        leftShooterMotor =  new VictorSPX(shooterLeftID);
+    public Shooter(int shooterLeftID, int shooterRightID, int leftSolenoidForward, int leftSolenoidReverse,
+            int rightSolenoidForward, int rightSolenoidReverse) {
+        leftShooterMotor = new VictorSPX(shooterLeftID);
         rightShooterMotor = new VictorSPX(shooterRightID);
-        leftShooterMotor .configFactoryDefault();
+        leftShooterMotor.configFactoryDefault();
         rightShooterMotor.configFactoryDefault();
-        rightShooterMotor.setInverted(true);        
+        rightShooterMotor.setInverted(true);
 
         compressor = new Compressor(PneumaticsModuleType.REVPH);
+
+        /**
+         * COMMENT THIS OUT BEFORE COMPETITION VERY IMPORTANT
+         */
+        compressor.disable();
 
         leftSolenoid = new DoubleSolenoid(PneumaticsModuleType.REVPH, leftSolenoidForward, leftSolenoidReverse);
         rightSolenoid = new DoubleSolenoid(PneumaticsModuleType.REVPH, rightSolenoidForward, rightSolenoidReverse);
