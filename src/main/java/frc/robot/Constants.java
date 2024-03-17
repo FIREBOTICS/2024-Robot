@@ -78,9 +78,9 @@ public final class Constants {
     public static final double maxDriveSpeedMetersPerSec = 5.0;
     
     public static final double frontLeftModuleOffset  = Units.degreesToRadians(122); //122
-    public static final double frontRightModuleOffset = Units.degreesToRadians(250.5); //250.5
+    public static final double frontRightModuleOffset = Units.degreesToRadians(-290); //250.5
     public static final double backLeftModuleOffset   = Units.degreesToRadians(34.3); //34.3
-    public static final double backRightModuleOffset  = Units.degreesToRadians(233); //233
+    public static final double backRightModuleOffset  = Units.degreesToRadians(-307); //304.9
   
 
     /**
@@ -102,7 +102,7 @@ public final class Constants {
     public static final double trapShotSpeed = 0.7; // CALIBRATE LATER
 
     public static final double intakeMotorSpeed = 0.9;
-    public static final double loaderMotorSpeed = 1;
+    public static final double loaderMotorSpeed = 0.3;
     public static final double bumperMotorRejectSpeed = 0.7; // these should have opposite signs:
     public static final double bumperMotorIntakeSpeed = 0.7;
 
@@ -146,9 +146,9 @@ public final class Constants {
     public static final int rearRightSteerMotorId = 42;
     public static final int rearRightSteerEncoderId = 43;
 
-    public static final boolean frontLeftDriveInverted = false;
+    public static final boolean frontLeftDriveInverted = true;
     public static final boolean frontRightDriveInverted = false;
-    public static final boolean backLeftDriveInverted = false;
+    public static final boolean backLeftDriveInverted = true;
     public static final boolean backRightDriveInverted = false;
 
     public static final boolean frontLeftSteerInverted = true;

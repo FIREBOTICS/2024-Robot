@@ -70,6 +70,7 @@ public class RobotContainer {
   public RobotContainer() {
     configureBindings();
 
+    /* Put field + PP on dash */
     Field2d field = new Field2d();
 
     PathPlannerLogging.setLogCurrentPoseCallback((pose) -> {
@@ -86,15 +87,15 @@ public class RobotContainer {
 
     SmartDashboard.putData("Field", field);
 
-    NamedCommands.registerCommand("Shoot Speaker", m_shooter.shootCommand(SubsystemConstants.speakerShotSpeed));
+    NamedCommands.registerCommand("Shoot Speaker", m_shooter.shootCommand(() -> SubsystemConstants.speakerShotSpeed));
     // NamedCommands.registerCommand("Shoot Amp", new AmpCommand(m_shooter));
-    NamedCommands.registerCommand("Shooter 0", m_shooter.shootCommand(0));
+    NamedCommands.registerCommand("Shooter 0", m_shooter.shootCommand(() -> 0));
     NamedCommands.registerCommand("Intake", m_intake.loadCommand(() -> 0, () -> 0, () -> 1));
     NamedCommands.registerCommand("Intake 0", m_intake.loadCommand(() -> 0, () -> 0, () -> 0));
     NamedCommands.registerCommand("Nudge Note", new SetCommand(m_intake, m_shooter));
 
-    String[] autos = {"Subwoofer Left Noteless","Subwoofer Center Noteless",
-      "Subwoofer Right Noteless","Subwoofer Right","Subwoofer Center","Test Curve"};
+    String[] autos = {"Subwoofer Left Intakeless","Subwoofer Center Intakeless",
+      "Subwoofer Right Intakeless","Subwoofer Right","Subwoofer Center","Test Curve"};
     for (String auto : autos) {
       autoSelector.addOption(auto, new PathPlannerAuto(auto));
     }
@@ -151,7 +152,7 @@ public class RobotContainer {
       //.onTrue(m_shooter.setPlatformCommand(true));
       //.onFalse(m_shooter.setPlatformCommand(false));
     // m_codriverController.x().whileTrue(new IntakeCommand(m_intake, m_leds));
-    m_codriverController.b().whileTrue(new AmpCommand(m_shooter));
+    // m_codriverController.b().whileTrue(new AmpCommand(m_shooter));
     m_codriverController.a().whileTrue(m_shooter.shootCommand(SubsystemConstants.speakerShotSpeed));
     m_codriverController.x().whileTrue(new SetCommand(m_intake, m_shooter));
     // m_codriverController.y().whileTrue(m_intake.reverseCommand());
@@ -166,9 +167,9 @@ public class RobotContainer {
 
     m_swerveDrive.setDefaultCommand(
         m_swerveDrive.driveCommand(
-            () -> deadband(m_driverController.getLeftY()),
-            () -> deadband(m_driverController.getLeftX()),
-            () -> deadband(m_driverController.getRightX()),
+            () -> -deadband(m_driverController.getLeftY()),
+            () -> -deadband(m_driverController.getLeftX()),
+            () -> -deadband(m_driverController.getRightX()),
             () -> isFieldOriented // Switch to False for Chairbot Mode
         ));
 

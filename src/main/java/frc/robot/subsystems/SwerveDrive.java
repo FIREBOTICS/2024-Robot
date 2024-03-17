@@ -305,6 +305,7 @@ public class SwerveDrive extends SubsystemBase {
     public Command driveCommand(
             DoubleSupplier driveSupplier,
             DoubleSupplier strafeSupplier,
+            
             DoubleSupplier rotSupplier,
             BooleanSupplier isFieldRelative) {
         return runOnce(
@@ -318,6 +319,7 @@ public class SwerveDrive extends SubsystemBase {
                     double rot = rotSupplier.getAsDouble();
                     rot *= Math.abs(rot);
 
+                    System.out.println(">" + isFieldRelative.getAsBoolean());
                     this.drive(
                             -drive,
                             -strafe,
@@ -340,6 +342,7 @@ public class SwerveDrive extends SubsystemBase {
         if (driveX != 0.0 || driveY != 0.0 || rotation != 0.0)
             isLocked = false;
         isFieldOriented = isFieldRelative;
+        System.out.println("<" + isFieldOriented);
 
         if (isLocked) {
             setModuleStates(new SwerveModuleState[] {
