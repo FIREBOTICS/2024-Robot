@@ -20,14 +20,15 @@ public class Shooter extends SubsystemBase {
     private final VictorSPX leftShooterMotor;
     private final VictorSPX rightShooterMotor;
 
-    private final DoubleSolenoid leftSolenoid;
-    private final DoubleSolenoid rightSolenoid;
+    // private final DoubleSolenoid leftSolenoid;
+    // private final DoubleSolenoid rightSolenoid;
 
-    private final Compressor compressor;
+    // private final Compressor compressor;
 
     // for brevity's sake
     private final VictorSPXControlMode PercentOutput = VictorSPXControlMode.PercentOutput;
 
+    /*
     public Command setPlatformCommand(boolean extended) {
         final DoubleSolenoid.Value value = extended ? DoubleSolenoid.Value.kForward : DoubleSolenoid.Value.kReverse;
         return runOnce(
@@ -39,7 +40,7 @@ public class Shooter extends SubsystemBase {
 
     public Command extendPlatformCommand() {
         return startEnd(
-                () -> {
+                () -> { 
                     leftSolenoid.set(DoubleSolenoid.Value.kForward);
                     rightSolenoid.set(DoubleSolenoid.Value.kForward);
                 },
@@ -48,6 +49,7 @@ public class Shooter extends SubsystemBase {
                     rightSolenoid.set(DoubleSolenoid.Value.kReverse);
                 });
     }
+    */
 
     public Command shootCommand(double speed) {
         return startEnd(
@@ -71,48 +73,43 @@ public class Shooter extends SubsystemBase {
         rightShooterMotor.set(PercentOutput, speed);
     }
 
+    /*
     public void setPistons(DoubleSolenoid.Value value) {
         leftSolenoid.set(value);
         rightSolenoid.set(value);
     }
+    */
 
+    /*
     public Command toggleCompressor() {
         return runOnce(
                 () -> {
                     compressor.disable();
-                    /**
-                     * UN-COMMMENT THIS IF YOU WANT COMPRESSOR
-                     */
                     // if (compressor.isEnabled())
                     // compressor.disable();
                     // else
                     // compressor.enableDigital();
                 });
     }
+    */
 
-    public Shooter(int shooterLeftID, int shooterRightID, int leftSolenoidForward, int leftSolenoidReverse,
-            int rightSolenoidForward, int rightSolenoidReverse) {
-        leftShooterMotor = new VictorSPX(shooterLeftID);
+    public Shooter(int shooterLeftID, int shooterRightID /*, int leftSolenoidForward, int leftSolenoidReverse, int rightSolenoidForward, int rightSolenoidReverse */) {
+        leftShooterMotor =  new VictorSPX(shooterLeftID);
         rightShooterMotor = new VictorSPX(shooterRightID);
         leftShooterMotor.configFactoryDefault();
         rightShooterMotor.configFactoryDefault();
         rightShooterMotor.setInverted(true);
 
-        compressor = new Compressor(PneumaticsModuleType.REVPH);
+        // compressor = new Compressor(PneumaticsModuleType.REVPH);
 
-        /**
-         * COMMENT THIS OUT BEFORE COMPETITION VERY IMPORTANT
-         */
-        compressor.disable();
-
-        leftSolenoid = new DoubleSolenoid(PneumaticsModuleType.REVPH, leftSolenoidForward, leftSolenoidReverse);
-        rightSolenoid = new DoubleSolenoid(PneumaticsModuleType.REVPH, rightSolenoidForward, rightSolenoidReverse);
-        setPistons(DoubleSolenoid.Value.kReverse);
+        // leftSolenoid = new DoubleSolenoid(PneumaticsModuleType.REVPH, leftSolenoidForward, leftSolenoidReverse);
+        // rightSolenoid = new DoubleSolenoid(PneumaticsModuleType.REVPH, rightSolenoidForward, rightSolenoidReverse);
+        // setPistons(DoubleSolenoid.Value.kReverse);
     }
 
     @Override
     public void periodic() {
-        SmartDashboard.putBoolean("Compressor", compressor.isEnabled());
+        // SmartDashboard.putBoolean("Compressor", compressor.isEnabled());
     }
 
 }

@@ -10,7 +10,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.SubsystemConstants;
 
 public class Intake extends SubsystemBase {
-    private final VictorSPX intakeMotor;
+    // private final VictorSPX intakeMotor;
+
     // private final VictorSPX bumperMotor;
 
     private final VictorSPX loaderMotor;
@@ -18,6 +19,7 @@ public class Intake extends SubsystemBase {
     // for brevity's sake
     private final VictorSPXControlMode PercentOutput = VictorSPXControlMode.PercentOutput;
 
+    /*
     public Command intakeCommand() {
         return startEnd(
                 () -> runIntakeMotors(true),
@@ -30,6 +32,8 @@ public class Intake extends SubsystemBase {
                 () -> runIntakeMotors(false));
     }
 
+    
+
     public void outTakeMotors(boolean on) {
         if (on) {
             intakeMotor.set(PercentOutput, -0.3 * SubsystemConstants.intakeMotorSpeed);
@@ -39,6 +43,7 @@ public class Intake extends SubsystemBase {
             // bumperMotor.set(PercentOutput, SubsystemConstants.bumperMotorRejectSpeed);
         }
     }
+    */
 
     /**
      * Move the loader according to the left stick, ONLY IF both controller triggers
@@ -59,6 +64,7 @@ public class Intake extends SubsystemBase {
         );
     }
 
+    /*
     public void runIntakeMotors(boolean on) {
         if (on) {
             intakeMotor.set(PercentOutput, 0.7 * SubsystemConstants.intakeMotorSpeed);
@@ -68,17 +74,20 @@ public class Intake extends SubsystemBase {
             // bumperMotor.set(PercentOutput, SubsystemConstants.bumperMotorRejectSpeed);
         }
     }
+    */
 
     public void runLoaderMotors(double speed) {
-        if (speed >= 0)
-            intakeMotor.set(PercentOutput, speed * SubsystemConstants.intakeMotorSpeed);
+        // if (speed >= 0) intakeMotor.set(PercentOutput, speed * SubsystemConstants.intakeMotorSpeed);
         loaderMotor.set(PercentOutput, speed * SubsystemConstants.loaderMotorSpeed);
     }
 
-    public Intake(int intakeMotorID, int loaderMotorID) {
+    public Intake(/*int intakeMotorID,*/ int loaderMotorID) {
+        /*
         intakeMotor = new VictorSPX(intakeMotorID);
         intakeMotor.configFactoryDefault();
         intakeMotor.setInverted(true);
+        */
+
         // bumperMotor = new VictorSPX(bumperMotorID);
         // bumperMotor.configFactoryDefault();
 

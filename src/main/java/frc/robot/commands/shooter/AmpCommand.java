@@ -17,13 +17,13 @@ public class AmpCommand extends Command {
     @Override
     public void initialize() {
         shooter.runMotors(SubsystemConstants.ampShotSpeed);
-        shooter.setPistons(DoubleSolenoid.Value.kForward);
+        // shooter.setPistons(DoubleSolenoid.Value.kForward);
     }
 
     @Override
     public void end(boolean interrupted) {
         shooter.runMotors(0);
-        shooter.setPistons(DoubleSolenoid.Value.kReverse);
-
+        // shooter.setPistons(DoubleSolenoid.Value.kReverse);
+        
     }
 }
