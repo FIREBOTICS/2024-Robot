@@ -75,10 +75,10 @@ public final class Constants {
 
     public static final double maxDriveSpeedMetersPerSec = 5.0;
     
-    public static final double frontLeftModuleOffset  = Units.degreesToRadians(122);
-    public static final double frontRightModuleOffset = Units.degreesToRadians(250.5);
-    public static final double backLeftModuleOffset   = Units.degreesToRadians(34.3);
-    public static final double backRightModuleOffset  = Units.degreesToRadians(233);
+    public static final double frontLeftModuleOffset  = Units.degreesToRadians(122); //122
+    public static final double frontRightModuleOffset = Units.degreesToRadians(250.5); //250.5
+    public static final double backLeftModuleOffset   = Units.degreesToRadians(34.3); //34.3
+    public static final double backRightModuleOffset  = Units.degreesToRadians(233); //233
   
 
     /**

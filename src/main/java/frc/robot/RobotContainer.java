@@ -30,9 +30,10 @@ import com.pathplanner.lib.commands.PathPlannerAuto;
 public class RobotContainer {
   // Initialize subsystems.
   private final SwerveDrive m_swerveDrive = new SwerveDrive();
-  private final Intake m_intake = new Intake(50, 51);
-  private final Shooter m_shooter = new Shooter(52, 53, 8,10,9,11);
-  private final Climber m_climber = new Climber(54, 55);
+  private final Intake m_intake = new Intake(/*50,*/ 51);
+  private final Shooter m_shooter = new Shooter(52, 53/*, 8,10,9,11*/);
+  // private final Climber m_climber = new Climber(54, 55);
+
   // private final LEDs m_leds = new LEDs(0,100);
   // UsbCamera camera = CameraServer.startAutomaticCapture();
 
@@ -49,17 +50,19 @@ public class RobotContainer {
   public RobotContainer() { 
     configureBindings();
 
-    NamedCommands.registerCommand("Shoot Speaker", m_shooter.shootCommand(SubsystemConstants.speakerShotSpeed));
-    NamedCommands.registerCommand("Shoot Amp", new AmpCommand(m_shooter));
+    NamedCommands.registerCommand("Shoot Speaker", m_shooter.shootCommand(() -> SubsystemConstants.speakerShotSpeed));
+    // NamedCommands.registerCommand("Shoot Amp", new AmpCommand(m_shooter));
     NamedCommands.registerCommand("Shooter 0", m_shooter.shootCommand(0));
     NamedCommands.registerCommand("Intake", m_intake.loadCommand(() -> 0, () -> 0, () -> 1));
     NamedCommands.registerCommand("Intake 0", m_intake.loadCommand(() -> 0, () -> 0, () -> 0));
     NamedCommands.registerCommand("Nudge Note", new SetCommand(m_intake, m_shooter));
 
-    autoSelector.addOption("Amp 2 Speaker 1", new PathPlannerAuto("Amp 2 Speaker 1"));
-    autoSelector.addOption("Amp 3", new PathPlannerAuto("Amp 3"));
-    autoSelector.addOption("Speaker 2", new PathPlannerAuto("Speaker 2"));
-    autoSelector.addOption("Test Curve", new PathPlannerAuto("Test Curve"));
+    String[] autos = {"Subwoofer Left Noteless","Subwoofer Center Noteless",
+      "Subwoofer Right Noteless","Subwoofer Right","Subwoofer Center","Test Curve"};
+    for (String auto : autos) {
+      autoSelector.addOption(auto, new PathPlannerAuto(auto));
+    }
+
     SmartDashboard.putData("auto selector", autoSelector);
 
     // camera.setResolution(240, 190);
@@ -91,7 +94,7 @@ public class RobotContainer {
     m_driverController.leftTrigger(ControllerConstants.triggerPressedThreshhold).whileTrue(m_swerveDrive.lockCommand());
     m_driverController.y().onTrue(m_swerveDrive.speedUpCommand(0.1));
     m_driverController.a().onTrue(m_swerveDrive.slowDownCommand(0.1));
-    m_driverController.x().onTrue(m_shooter.toggleCompressor());        
+    // m_driverController.x().onTrue(m_shooter.toggleCompressor());        
     m_driverController.back().onTrue(toggleFieldOrientedCommand());
     m_driverController.start().onTrue(m_swerveDrive.resetHeadingCommand());
     m_driverController.povLeft() /* GOTO STAGE POSITION #1 */; //unclear if these will be feasible
@@ -100,15 +103,15 @@ public class RobotContainer {
 
     // Extend AMP platform doohickey when either bumper is pressed, and lower it when it's unpressed
     /* */
-    m_codriverController.leftBumper().or(m_codriverController.rightBumper())
-      .whileTrue(m_shooter.extendPlatformCommand());
+    // m_codriverController.leftBumper().or(m_codriverController.rightBumper())
+    //   .whileTrue(m_shooter.extendPlatformCommand());
       //.onTrue(m_shooter.setPlatformCommand(true));
       //.onFalse(m_shooter.setPlatformCommand(false));
     // m_codriverController.x().whileTrue(new IntakeCommand(m_intake, m_leds));
     m_codriverController.b().whileTrue(new AmpCommand(m_shooter));
     m_codriverController.a().whileTrue(m_shooter.shootCommand(SubsystemConstants.speakerShotSpeed));
     m_codriverController.x().whileTrue(new SetCommand(m_intake, m_shooter));
-    m_codriverController.y().whileTrue(m_intake.reverseCommand());
+    // m_codriverController.y().whileTrue(m_intake.reverseCommand());
  
     /* Uncomment this if the other one doesn't work */
     // m_codriverController.b().onTrue(m_shooter.shootCommand(SubsystemConstants.ampShotSpeed))
@@ -145,6 +148,7 @@ public class RobotContainer {
       )
     );
 
+    /*
     m_climber.setDefaultCommand(
       m_climber.moveClimber(
         () -> m_codriverController.getLeftTriggerAxis(),
@@ -153,6 +157,7 @@ public class RobotContainer {
         () -> m_codriverController.getRightY()
       )
     );
+    */
 
     /*
     m_leds.setDefaultCommand(
