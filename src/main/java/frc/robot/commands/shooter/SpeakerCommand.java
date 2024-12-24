@@ -20,7 +20,6 @@ public class SpeakerCommand extends Command {
             buffer.setRGB(i, 255, 217, 0); /* yellow */
 
         addRequirements(shooter, leds);
-        // addRequirements(leds);
     }
 
     @Override
@@ -32,7 +31,7 @@ public class SpeakerCommand extends Command {
     @Override
     public void end(boolean interrupted) {
         shooter.runMotors(0);
-        /* leds SHOULD go back to default color (defaultCommand in RobotContainer) */
+        /* leds SHOULD go back to default color (defaultCommand in RobotContainer) -- untested */
     }
 
 }

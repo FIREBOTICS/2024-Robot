@@ -144,11 +144,9 @@ public class SwerveDrive extends SubsystemBase {
     public Command lockCommand() {
         // Inline construction of command goes here.
         // Subsystem::RunOnce implicitly requires `this` subsystem.
-        return runOnce(
-                () -> {
-                    lock();
-                });
+        return runOnce(this::lock);
     }
+
 
     /**
      * Sets the desired state for each swerve module.
@@ -291,15 +289,7 @@ public class SwerveDrive extends SubsystemBase {
     }
 
     public Command resetHeadingCommand() {
-        return runOnce(
-                () -> resetHeading());
-    }
-
-    public void setDriveCurrentLimit(int amps) {
-        frontLeftMod.setDriveCurrentLimit(amps);
-        frontRightMod.setDriveCurrentLimit(amps);
-        backLeftMod.setDriveCurrentLimit(amps);
-        backRightMod.setDriveCurrentLimit(amps);
+        return runOnce(this::resetHeading);
     }
 
     public Command driveCommand(
@@ -319,7 +309,6 @@ public class SwerveDrive extends SubsystemBase {
                     double rot = rotSupplier.getAsDouble();
                     rot *= Math.abs(rot);
 
-                    System.out.println(">" + isFieldRelative.getAsBoolean());
                     this.drive(
                             -drive,
                             -strafe,

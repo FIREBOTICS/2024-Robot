@@ -20,7 +20,6 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
  */
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
-  private Command m_disabledCommand;
 
   private RobotContainer m_robotContainer;
 
@@ -59,20 +58,11 @@ public class Robot extends TimedRobot {
     CommandScheduler.getInstance().run();
 
     SmartDashboard.putBoolean("Field Oriented", m_robotContainer.getFieldOriented());
-    // SmartDashboard.putNumber("PSI", m_compressor.getPressure());
-    // System.out.println(m_compressor.getPressure()); //-24?
   }
 
   /** This function is called once each time the robot enters Disabled mode. */
   @Override
   public void disabledInit() {
-    m_disabledCommand = m_robotContainer.getdisabledCommand();
-
-    // schedule the disabled command (example)
-    if (m_disabledCommand != null) {
-      m_disabledCommand.schedule();
-    }
-
   }
 
   @Override
@@ -91,9 +81,6 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();
     }
-    if (m_disabledCommand != null) {
-      m_disabledCommand.cancel();
-    }
 
   }
 
@@ -110,9 +97,6 @@ public class Robot extends TimedRobot {
     // this line or comment it out.
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
-    }
-    if (m_disabledCommand != null) {
-      m_disabledCommand.cancel();
     }
 
   }

@@ -13,7 +13,6 @@ public class SetCommand extends Command {
         this.shooter = shooter;
 
         addRequirements(intake, shooter);
-        // addRequirements(shooter);
     }
 
     @Override

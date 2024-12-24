@@ -22,7 +22,6 @@ public class LoadCommand extends Command {
             buffer.setRGB(i, 0, 255, 0);
 
         addRequirements(intake, leds);
-        // addRequirements(leds);
     }
 
     @Override
@@ -38,7 +37,7 @@ public class LoadCommand extends Command {
     @Override
     public void end(boolean interrupted) {
         intake.runLoaderMotors(0);
-        /* leds SHOULD go back to default color (defaultCommand in RobotContainer) */
+        /* leds SHOULD go back to default color (defaultCommand in RobotContainer) -- untested */
     }
 
 }

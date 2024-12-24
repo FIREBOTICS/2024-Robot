@@ -50,7 +50,7 @@ public class SwerveModule extends SubsystemBase {
     public SwerveModule(int moduleID, boolean driveMotorInverted, boolean steerMotorInverted,
             double steerOffsetRadians) {
         moduleID *= 10;
-        int driveMotorId = moduleID + 1; /* i.e 11 */
+        int driveMotorId = moduleID + 1; /* i.e. 11 */
         int steerMotorId = moduleID + 2;
         int canCoderId = moduleID + 3;
 
@@ -91,11 +91,8 @@ public class SwerveModule extends SubsystemBase {
         steerEncoder.setPositionConversionFactor(DriveConstants.steerRadiansPerEncRev);
 
         CANcoderConfiguration canCoderConfig = new CANcoderConfiguration();
-        canCoderConfig.MagnetSensor.AbsoluteSensorRange = AbsoluteSensorRangeValue.Unsigned_0To1; // TODO: I HAVE NO
-                                                                                                  // IDEA IF THIS WORKS
+        canCoderConfig.MagnetSensor.AbsoluteSensorRange = AbsoluteSensorRangeValue.Unsigned_0To1;
         canCoderConfig.MagnetSensor.SensorDirection = SensorDirectionValue.CounterClockwise_Positive;
-        // configure the CANCoder to output in unsigned (wrap around from 360 to 0
-        // degrees)
         canCoder.getConfigurator().apply(canCoderConfig);
 
         initSteerOffset();
@@ -234,8 +231,5 @@ public class SwerveModule extends SubsystemBase {
         }
     }
 
-    public void setDriveCurrentLimit(int amps) {
-        driveMotor.setSmartCurrentLimit(amps);
-    }
 
 }

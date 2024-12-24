@@ -16,8 +16,6 @@ public class Climber extends SubsystemBase {
     // for brevity's sake
     private final VictorSPXControlMode PercentOutput = VictorSPXControlMode.PercentOutput;
 
-    
-
 
     public Command moveClimber(DoubleSupplier leftTrigger, DoubleSupplier rightTrigger, DoubleSupplier leftSpeed, DoubleSupplier rightSpeed) {
         return runOnce(
@@ -32,11 +30,6 @@ public class Climber extends SubsystemBase {
             }
         );
     }
-
-    // @Override
-    // public void periodic() {
-    //     climberMotor. 
-    // }
 
     public Climber(int leftClimberID, int rightClimberID) {
         leftMotor = new VictorSPX(leftClimberID);
